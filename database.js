@@ -19,6 +19,18 @@ exports.get = function() {
   return state.db
 }
 
+exports.getDatabaseData = function(col) {
+  var collection = state.db.collection(col);
+  collection.find().toArray(function(err, locations) {
+    if (err) {
+      return 'Error getting database data';
+    } else  {
+      console.log('locations from database', locations);
+      return locations
+    }
+  });
+}
+
 exports.login = function(data) {
   //console.log('data to verify', data);
   var collection = state.db.collection('test-accounts');

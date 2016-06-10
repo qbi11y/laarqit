@@ -3,6 +3,8 @@ var app = angular.module('Locations', []);
 app.factory('Locations', ['$http', function($http) {
     var locations = {};
     locations.latlng = {};
+    locations.locations = [];
+    locations.location = {};
     locations.geoCode = function(address) {
         //var config = {};
         $http.post('/geoCode', address)
@@ -20,6 +22,7 @@ app.factory('Locations', ['$http', function($http) {
         $http.post('/locations/search', params)
             .then(function(res) {
                 console.log('success search', res);
+                locations.locations = res;
             }, function(res) {
                 console.log('error search', res);
             });
@@ -48,6 +51,14 @@ app.factory('Locations', ['$http', function($http) {
             }, function(res) {
                 console.log('error remove', res);
             });
+    }
+
+    locations.setCurrentLocation = function(loc) {
+        locations.location = loc;
+    }
+
+    locations.getCurrentLocation = function() {
+        return locations.location;
     }
     return locations
 }])

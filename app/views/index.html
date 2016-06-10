@@ -1,1 +1,5 @@
-Index stuff
+<div ng-repeat="location in locations">
+	<img ng-src="{{location.image_url}}">
+	<h3><a href="" ng-click="showDetails(location)">{{ location.name }}</a></h3>
+	<h4>{{ location.location.address[0] }}</h4>
+</div>

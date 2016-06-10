@@ -84,14 +84,16 @@ server.post('/locations/search', function(req, res) {
     var apiURL = url+'?'+paramURL;
 
     /* Then we use request to send make the API Request */
-    request(apiURL, function(error, response, body){
-        var parseBody = JSON.parse(body);
-        for (var n=0; n < parseBody.businesses.length; n++) {
-            db.insertIntoDatabase(parseBody.businesses[n], 'test-locations')
+    request(apiURL, function(err, response, body){
+        console.log('search', body);
+        if (!err) {
+            res.send(JSON.parse(body));            
+        } else {
+            db.get().collection('test-locations').find().toArray(function(err, docs) {
+                //console.log('docs to work with', docs);
+                res.send(docs);
+            })
         }
-        console.log('business', JSON.parse(body));
-        //;
-        res.send(body)
     });
 });
 
@@ -119,6 +121,8 @@ server.post('/locations/add', function(req, res) {
 });
 
 server.post( '/geoCode' ,function(req, res) {
+    
+    console.log('geocoding', req.body)
     var address = '';
 
     for (i in req.body) {

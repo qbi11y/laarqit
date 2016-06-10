@@ -27,4 +27,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: 'views/login.html',
             controller: 'LoginController'
         })
+
+        .state('details', {
+            url: '/details/:id',
+            templateUrl: 'views/details.html',
+            controller: 'DetailsController'
+        })
 })

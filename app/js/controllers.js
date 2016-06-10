@@ -8,12 +8,12 @@ app.controller('LoginController', ['$scope', '$state', 'Accounts', function($sco
 app.controller('ManageController', ['$scope', '$state', 'Photos', 'Locations', function($scope, $state, Photos, Locations) {
     $scope.Photos = Photos;
     $scope.Locations = Locations;
+    $scope.locations = [];
     $scope.uploadedPhotos = [];
     Photos.getVenuePhotos();
-    Locations.geoCode({address: '6611 Clinton Manor Dr', city: 'Clinton', state: 'MD', zip: ''});
+    Locations.geoCode({address: '1201 Mercer St', city: 'Seattle', state: 'WA', zip: ''});
     //Locations.add({address: '6611 Clinton Manor Dr', city: 'Clinton', state: 'MD', zip: ''});
-    //Locations.remove({address: '6611 Clinton Manor Dr', city: 'Clinton', state: 'MD', zip: ''});
-    Locations.search({location: '78756'});
+    //Locations.remove({address: '6611 Clinton Manor Dr', city: 'Clinton', state: 'MD', zip: ''});    
     
     $scope.$watch(function(scope) {
       return scope.Locations.latlng;
@@ -27,10 +27,6 @@ app.controller('ManageController', ['$scope', '$state', 'Photos', 'Locations', f
         $scope.uploadedPhotos = newValue;
         console.log('photo array', $scope.uploadedPhotos);
     });
-
-
-
-
 
     $('.upload-btn').on('click', function (){
         $('#upload-input').click();
@@ -100,7 +96,35 @@ app.controller('ManageController', ['$scope', '$state', 'Photos', 'Locations', f
     });
 }]);
 
-app.controller('IndexController', ['$scope', '$state', function($scope, $state) {
+app.controller('DetailsController', ['$scope', '$state', '$stateParams', 'Locations', function($scope, $state, $stateParams, Locations) {
+  console.log($stateParams.id)
+  console.log('current location', Locations.getCurrentLocation());
+}]);
+
+app.controller('IndexController', ['$scope', '$state', '$stateParams', 'Locations', function($scope, $state, $stateParams, Locations) {
     console.log('index controller');
+    $scope.Locations = Locations;
+    $scope.locations = [];
+    Locations.search({location: 'Seattle, WA', cll: '47.62393669999999, -122.3326679'});
+    $scope.showDetails = function(loc) {
+      console.log('location details', loc);
+      Locations.setCurrentLocation(loc);
+      $state.go('details');
+    }
+
+    $scope.$watch(function(scope) {
+      return scope.Locations.locations;
+    }, function(newValue, oldValue) {
+      if (newValue != oldValue) updateLocations(newValue);
+    });
+
+    function updateLocations(locs) {
+      console.log('locations to work with', locs);
+      var locations = locs.data.businesses;
+      for (var n=0; n < locations.length; n++) {
+        $scope.locations.push(locations[n]);
+      }
+      console.log('UI ready locations', $scope.locations);
+    }
     
 }])
